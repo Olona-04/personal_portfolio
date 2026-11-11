@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Olona Williams – Application Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header><div class="wrap">
+<a class="logo" href="#home">OLONA WILLIAMS<em>.</em></a>
+<nav id="nav"><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#education">Education</a><a href="#certificates">Certificates</a><a href="#experience">Experience</a><a href="#contact">Contact</a><a class="navbtn" href="OLONA_WILLIAMS_CV.pdf" download>CV</a><a class="navbtn dm" href="#msg">💬 Direct message</a></nav>
+<button class="ico" id="theme" aria-label="Switch between light and dark mode" title="Light / dark">🌙</button>
+<button class="ico" id="menu" aria-label="Menu" aria-expanded="false">☰</button>
+</div></header>
+
+<main>
+<section class="hero" id="home"><div class="wrap">
+<div>
+<div class="pill"><i></i>Open to internships and junior roles</div>
+<h1>Olona Metia <em>Williams.</em></h1>
+<div class="role">IT student · <b>Aspiring Software Engineer</b> · Application Developer · UI/UX</div>
+<p>Final-year IT student at CPUT who builds <strong>web apps</strong> and designs <strong>app interfaces</strong>, from the PHP and MySQL behind a store to the Figma screens people tap.</p>
+<div class="btns">
+<a class="btn main" href="#projects">View projects</a>
+<a class="btn" href="#contact">Contact me</a>
+<a class="btn" href="OLONA_WILLIAMS_CV.pdf" download>Download CV</a>
+</div>
+</div>
+<div class="portrait"><img src="images/olona.jpg" alt="Olona Williams" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%"><span>Final-year · Application Development · CPUT</span></div>
+</div></section>
+
+<section id="about"><div class="wrap">
+<div class="eyebrow">ABOUT</div>
+<h2>Building things that <em>work</em> and feel good to use.</h2>
+<div class="about">
+<div>
+<p>I'm a final-year Information Technology (Application Development) student at Cape Peninsula University of Technology. I like turning an idea into something people can use, from the database underneath to the screen on top.</p>
+<p>My group projects have covered both sides: the PHP backend and database connection for a thrift clothing store, and an interactive Figma prototype for a student-funding app. I'm looking for an internship or junior developer role where I can keep learning while shipping real work.</p>
+</div>
+<div class="facts">
+<div class="fact"><small>STUDYING</small>National Diploma, IT (Application Development)</div>
+<div class="fact"><small>COMPLETED</small>Higher Certificate in ICT, 2024</div>
+<div class="fact"><small>BASED IN</small>Kraaifontein, Cape Town</div>
+<div class="fact"><small>STATUS</small>Open to work</div>
+</div>
+</div>
+</div></section>
+
+<section id="skills"><div class="wrap">
+<div class="eyebrow">SKILLS</div>
+<h2>What I work <em>with.</em></h2>
+<p class="lead">The tools I've used in coursework and group projects.</p>
+<div class="grid4">
+<div class="sk"><div class="ic">&lt;/&gt;</div><h3>Programming languages</h3><ul><li>Python</li><li>Java</li><li>JavaScript</li><li>TypeScript</li><li>PHP</li><li>SQL</li></ul></div>
+<div class="sk"><div class="ic">&#9883;</div><h3>Frameworks &amp; libraries</h3><ul><li>React</li><li>Next.js</li><li>Node.js</li><li>Express</li><li>Tailwind CSS</li><li>Vite</li></ul></div>
+<div class="sk"><div class="ic">DB</div><h3>Web &amp; databases</h3><ul><li>HTML</li><li>CSS</li><li>MySQL</li><li>MongoDB</li><li>Database connectivity</li></ul></div>
+<div class="sk"><div class="ic">UI</div><h3>Design</h3><ul><li>UI/UX design</li><li>Figma</li><li>Wireframing</li><li>Prototyping</li></ul></div>
+<div class="sk"><div class="ic">Git</div><h3>Tools &amp; practice</h3><ul><li>Git version control</li><li>GitHub</li><li>Vercel</li><li>OpenAI API</li><li>AI-assisted development</li><li>Team collaboration</li><li>User-centred design</li></ul></div>
+</div>
+</div></section>
+
+<section id="projects"><div class="wrap">
+<div class="eyebrow">PROJECTS</div>
+<h2>Selected <em>work.</em></h2>
+<p class="lead">The projects I built for work, and the ones from my studies at CPUT.</p>
+<h3 class="grp">Work projects <small>WORK</small></h3>
+<div class="grid3">
+<article class="proj"><div class="shot"><img src="images/agribot.jpg" alt="AgriBot welcome screen: a robot mascot over a crop field with the tagline Healthy Crops, Better Yields, Brighter Futures" style="object-position:center 30%"></div><div class="body">
+<h3>AgriBot: AI Chatbot for Small-Scale Farmers</h3>
+<p>A chatbot that lets farmers describe a crop problem in everyday language. It asks up to three focused questions, then gives a likely cause (not a diagnosis) with prevention tips, and refers serious cases to an advisor. Built by Transformers Group, a team of 5.</p>
+<div class="tags"><span>Next.js</span><span>React</span><span>Tailwind CSS</span><span>OpenAI API</span><span>MongoDB</span></div>
+<div class="links"><a href="https://agribot-silk.vercel.app" target="_blank" rel="noopener">Live demo</a></div></div></article>
+<article class="proj"><div class="shot"><img src="images/moodspark.jpg" alt="MoodSpark, the Sentiment AI app: Daily Mood Check-In screen with emoji moods like Joyful, Calm and Inspired" style="object-position:left top"></div><div class="body">
+<h3>MoodSpark: AI Sentiment Analysis</h3>
+<p>A mood and sentiment app that turns words into insights. It analyses single texts and batches of comments with two engines that run in the browser, VADER and a transformer-style model, and has a daily mood journal that checks how closely your words match your mood. Built with React and TypeScript.</p>
+<div class="tags"><span>React</span><span>TypeScript</span><span>Vite</span><span>Tailwind CSS</span><span>VADER</span><span>NLP</span></div>
+<div class="links"><a href="https://sentimentai-2.ai.studio" target="_blank" rel="noopener">Live demo</a></div></div></article>
+<article class="proj"><div class="shot"><img src="images/content-generator.jpg" alt="Content Generator app: pick text, code or image, write a prompt, and see the result with copy and download buttons" style="object-position:center top"></div><div class="body">
+<h3>Content Generator &amp; Social Publisher</h3>
+<p>An AI app that makes text, code or images from a prompt, lets you add a caption, then posts to your socials. It also suggests hashtags and has a prompt library, tone options and a colour palette picker. The frontend is React with TypeScript, with a Node/Express backend.</p>
+<div class="tags"><span>React</span><span>TypeScript</span><span>Vite</span><span>Tailwind CSS</span><span>Node.js</span><span>Express</span><span>Vercel</span></div>
+<div class="links"><a href="https://content-generator-social-publisher.ai.studio" target="_blank" rel="noopener">Live demo</a></div></div></article>
+</div>
+<h3 class="grp">CPUT school projects <small>SCHOOL</small></h3>
+<div class="grid3">
+<article class="proj"><div class="shot" role="img" aria-label="Illustration of an online thrift clothing store with product cards and prices"><svg viewBox="0 0 400 210" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="210" style="fill:var(--surface2)"/><rect x="0" y="0" width="400" height="38" style="fill:var(--surface)"/><line x1="0" y1="38" x2="400" y2="38" style="stroke:var(--line)"/><text x="20" y="25" font-size="16" font-weight="700" font-family="Space Grotesk,sans-serif" style="fill:var(--ink)">thrift.</text><rect x="300" y="14" width="26" height="10" rx="5" style="fill:var(--line)"/><rect x="334" y="14" width="46" height="10" rx="5" style="fill:var(--accent)"/><g transform="translate(12,56)"><rect width="104" height="132" rx="12" style="fill:var(--surface);stroke:var(--line)"/><rect x="8" y="8" width="88" height="70" rx="8" style="fill:var(--surface2)"/><g transform="translate(22,16)"><polygon points="12,6 24,0 36,0 48,6 58,18 48,24 42,18 42,50 18,50 18,18 12,24 2,18" style="fill:var(--accent)"/></g><rect x="10" y="88" width="62" height="7" rx="3.5" style="fill:var(--line)"/><rect x="10" y="102" width="44" height="18" rx="9" style="fill:var(--accent)"/><text x="32" y="115" font-size="10" text-anchor="middle" font-family="Space Grotesk,sans-serif" style="fill:var(--on-accent)">R120</text></g><g transform="translate(148,56)"><rect width="104" height="132" rx="12" style="fill:var(--surface);stroke:var(--line)"/><rect x="8" y="8" width="88" height="70" rx="8" style="fill:var(--surface2)"/><g transform="translate(22,16)"><polygon points="12,6 24,0 36,0 48,6 58,18 48,24 42,18 42,50 18,50 18,18 12,24 2,18" style="fill:var(--accent2)"/></g><rect x="10" y="88" width="62" height="7" rx="3.5" style="fill:var(--line)"/><rect x="10" y="102" width="44" height="18" rx="9" style="fill:var(--accent)"/><text x="32" y="115" font-size="10" text-anchor="middle" font-family="Space Grotesk,sans-serif" style="fill:var(--on-accent)">R120</text></g><g transform="translate(284,56)"><rect width="104" height="132" rx="12" style="fill:var(--surface);stroke:var(--line)"/><rect x="8" y="8" width="88" height="70" rx="8" style="fill:var(--surface2)"/><g transform="translate(22,16)"><polygon points="12,6 24,0 36,0 48,6 58,18 48,24 42,18 42,50 18,50 18,18 12,24 2,18" style="fill:var(--muted)"/></g><rect x="10" y="88" width="62" height="7" rx="3.5" style="fill:var(--line)"/><rect x="10" y="102" width="44" height="18" rx="9" style="fill:var(--accent)"/><text x="32" y="115" font-size="10" text-anchor="middle" font-family="Space Grotesk,sans-serif" style="fill:var(--on-accent)">R120</text></g></svg></div><div class="body">
+<h3>Thrifting E-Commerce Website</h3>
+<p>A thrift clothing store with responsive pages. I built the PHP backend and database connection, so products display dynamically and their data is stored in MySQL.</p>
+<div class="tags"><span>HTML</span><span>CSS</span><span>Java</span><span>PHP</span><span>MySQL</span></div>
+<div class="links"><a href="https://github.com/Olona-04" target="_blank" rel="noopener">Code</a></div></div></article>
+<article class="proj"><div class="shot"><img src="images/nsfas.jpg" alt="NSFAS app prototype in Figma: dashboard, application details, document upload, allowance and inbox screens" style="object-position:center top"></div><div class="body">
+<h3>NSFAS Mobile App Redesign</h3>
+<p>An interactive prototype that makes student funding easier to access, with flows for login, applications, document uploads and dashboard tracking.</p>
+<div class="tags"><span>Figma</span><span>UI/UX</span><span>Wireframing</span><span>Prototyping</span></div>
+<div class="links"><a href="https://www.figma.com/design/XaPGadSKxAlvpft8yqSceh/Multimedia-Term-3?node-id=0-1&amp;p=f&amp;t=83lXfYdSV1BZFWle-0" target="_blank" rel="noopener">View in Figma</a></div></div></article>
+</div>
+</div></section>
+
+<section id="education"><div class="wrap">
+<div class="eyebrow">EDUCATION</div>
+<h2>Where I've <em>studied.</em></h2>
+<div class="grid3" style="margin-top:30px">
+<div class="sk cert"><div class="ic">🎓</div><div><h3>National Diploma, IT</h3><p>Application Development · CPUT<br>Currently enrolled (final year)</p></div></div>
+<div class="sk cert"><div class="ic">📜</div><div><h3>Higher Certificate, ICT</h3><p>Cape Peninsula University of Technology<br>Completed 2024</p></div></div>
+<div class="sk cert"><div class="ic">🏫</div><div><h3>Matric (Grade 12)</h3><p>Bernadino Heights High School<br>Completed 2020</p></div></div>
+</div>
+</div></section>
+
+<section id="certificates"><div class="wrap">
+<div class="eyebrow">CERTIFICATES</div>
+<h2>My <em>certificates.</em></h2>
+<div class="grid3" style="margin-top:30px">
+<div class="sk cert2"><img src="images/cert-ai-bootcamp.jpg" alt="Artificial Intelligence Bootcamp (AI) badge from Capaciti, powered by Coursera"><div><h3>Artificial Intelligence Bootcamp (AI)</h3><p class="meta">Capaciti · Coursera</p><p>Completed September 2026</p><p><a href="https://coursera.org/share/e7cc78e7b51b9da41e132e753f55fa02" target="_blank" rel="noopener" style="color:var(--accent);font-weight:500">View badge</a></p></div></div>
+<div class="sk cert2"><img src="images/cert-google-ai-essentials.jpg" alt="Google AI Essentials badge from Capaciti, powered by Coursera"><div><h3>Google AI Essentials</h3><p class="meta">Capaciti · Coursera</p><p>Completed October 2026</p><p><a href="https://coursera.org/share/3f18d3e6a44a4fd18144ec9720837d6a" target="_blank" rel="noopener" style="color:var(--accent);font-weight:500">View badge</a></p></div></div>
+<div class="sk cert2"><img src="images/cert-professional-development.jpg" alt="Professional Development learning path badge from Capaciti, powered by Coursera"><div><h3>Professional Development</h3><p class="meta">Capaciti · Coursera</p><p>Completed October 2026</p><p><a href="https://coursera.org/share/ef90d2ef4794aa27db409a103cb2d9ea" target="_blank" rel="noopener" style="color:var(--accent);font-weight:500">View badge</a></p></div></div>
+</div>
+</div></section>
+
+<section id="experience"><div class="wrap">
+<div class="eyebrow">EXPERIENCE</div>
+<h2>Work <em>experience.</em></h2>
+<div class="grid3" style="margin-top:30px">
+<div class="sk"><h3>Educator Assistant</h3><p class="meta">Northpine Technical High School · 2021–2022</p>
+<ul class="cv-ul"><li>Assisted educators with classroom preparation and admin</li><li>Supported learners with academic activities and problem-solving</li><li>Managed mark sheets and educational records</li></ul></div>
+<div class="sk"><h3>General Assistant</h3><p class="meta">Giant Hyper · Nov–Dec 2018</p>
+<ul class="cv-ul"><li>Helped customers with product enquiries</li><li>Stocked shelves and organised merchandise displays</li><li>Promoted products and kept customer satisfaction high</li></ul></div>
+</div>
+</div></section>
+
+<section id="contact"><div class="wrap">
+<div class="contact">
+<div>
+
+<div class="eyebrow">CONTACT</div>
+<h2>Let's <em>talk.</em></h2>
+<p class="lead">Looking for a junior developer or intern? Send me an email and I'll get back to you.</p>
+<a class="mail" href="mailto:olonawilliams04@gmail.com">olonawilliams04@gmail.com</a>
+<p class="lead" style="margin:-10px 0 26px;font-size:15px">Student email: <a href="mailto:221630635@mycput.ac.za" style="color:var(--accent)">221630635@mycput.ac.za</a></p>
+<div class="btns"><a class="btn main" href="tel:+27627700449">📞 062 770 0449</a><a class="btn" href="OLONA_WILLIAMS_CV.pdf" download>Download CV</a><a class="btn" href="https://github.com/Olona-04" target="_blank" rel="noopener">GitHub</a><a class="btn" href="https://www.linkedin.com/in/olona-williams-5797653b1/" target="_blank" rel="noopener">LinkedIn</a></div>
+</div>
+<form class="msg" id="msg">
+<h3>Send me a message</h3>
+<label>Your name<input name="name" type="text" required autocomplete="name"></label>
+<label>Your email<input name="email" type="email" required autocomplete="email"></label>
+<label>Message<textarea name="message" required placeholder="Hi Olona, I'd like to talk about..."></textarea></label>
+<button class="btn main" type="submit">Send message</button>
+<p class="note" id="msgnote">This opens your email app with the message ready to send to me.</p>
+</form>
+</div>
+</div></section>
+</main>
+<footer>© 2026 Olona Williams · Kraaifontein, Cape Town · Built with HTML, CSS and JavaScript</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

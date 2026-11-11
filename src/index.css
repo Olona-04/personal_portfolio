@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #080d10;
+  --surface: #0f171b;
+  --surface2: #142126;
+  --ink: #f1f6f5;
+  --muted: #93a6a8;
+  --line: #1f3237;
+  --accent: #2ee6c0;
+  --accent2: #ff7aa8;
+  --on-accent: #04201b;
+  --glow: rgba(46, 230, 192, 0.16);
+  --font-sans: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+}
+
+:root[data-theme="light"] {
+  --bg: #f6faf9;
+  --surface: #ffffff;
+  --surface2: #eaf4f2;
+  --ink: #0d1f22;
+  --muted: #587074;
+  --line: #d3e3e0;
+  --accent: #0a9c82;
+  --accent2: #d6336c;
+  --on-accent: #ffffff;
+  --glow: rgba(10, 156, 130, 0.12);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f6faf9;
+    --surface: #ffffff;
+    --surface2: #eaf4f2;
+    --ink: #0d1f22;
+    --muted: #587074;
+    --line: #d3e3e0;
+    --accent: #0a9c82;
+    --accent2: #d6336c;
+    --on-accent: #ffffff;
+    --glow: rgba(10, 156, 130, 0.12);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(76px + env(safe-area-inset-top, 0px));
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(60% 45% at 85% 0%, var(--glow), transparent),
+              radial-gradient(50% 40% at 0% 60%, var(--glow), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.font-serif-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, var(--ink) 0%, var(--accent) 40%, var(--accent2) 70%, var(--ink) 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 9s linear infinite;
+}
+
+.gradient-accent {
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+  to {
+    background-position: 220% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text, .gradient-accent {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
