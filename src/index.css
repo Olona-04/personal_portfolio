@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #080d10;
-  --surface: #0f171b;
+  --bg: #070d10;
+  --surface: #0e171b;
   --surface2: #142126;
-  --ink: #f1f6f5;
-  --muted: #93a6a8;
-  --line: #1f3237;
+  --ink: #f0f7f5;
+  --heading: #2ee6c0;
+  --muted: #8fa6a8;
+  --line: #1c2e33;
   --accent: #2ee6c0;
   --accent2: #ff7aa8;
   --on-accent: #04201b;
@@ -16,30 +17,32 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #f6faf9;
+  --bg: #f4f9f8;
   --surface: #ffffff;
-  --surface2: #eaf4f2;
-  --ink: #0d1f22;
-  --muted: #587074;
-  --line: #d3e3e0;
+  --surface2: #e8f3f1;
+  --ink: #0a4037;
+  --heading: #0a4037;
+  --muted: #4e6b66;
+  --line: #d1e5e1;
   --accent: #0a9c82;
   --accent2: #d6336c;
   --on-accent: #ffffff;
-  --glow: rgba(10, 156, 130, 0.12);
+  --glow: rgba(10, 156, 130, 0.14);
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --bg: #f6faf9;
+    --bg: #f4f9f8;
     --surface: #ffffff;
-    --surface2: #eaf4f2;
-    --ink: #0d1f22;
-    --muted: #587074;
-    --line: #d3e3e0;
+    --surface2: #e8f3f1;
+    --ink: #0a4037;
+    --heading: #0a4037;
+    --muted: #4e6b66;
+    --line: #d1e5e1;
     --accent: #0a9c82;
     --accent2: #d6336c;
     --on-accent: #ffffff;
-    --glow: rgba(10, 156, 130, 0.12);
+    --glow: rgba(10, 156, 130, 0.14);
   }
 }
 
@@ -61,18 +64,61 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: radial-gradient(60% 45% at 85% 0%, var(--glow), transparent),
-              radial-gradient(50% 40% at 0% 60%, var(--glow), transparent);
+  background: radial-gradient(65% 50% at 85% 5%, var(--glow), transparent 70%),
+              radial-gradient(55% 45% at 5% 65%, var(--glow), transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
 
+/* Serif italic accent font */
 .font-serif-italic {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
 }
 
+/* Big display headings */
+.display-heading {
+  font-family: var(--font-sans);
+  font-size: clamp(40px, 6.8vw, 76px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+.display-heading em,
+.display-heading .serif-part {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+}
+
+/* Eyebrow rule */
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.section-eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 2px;
+  background: var(--accent);
+  display: block;
+  border-radius: 2px;
+}
+
+/* Shimmer gradient effect */
 .gradient-text {
   background: linear-gradient(90deg, var(--ink) 0%, var(--accent) 40%, var(--accent2) 70%, var(--ink) 100%);
   background-size: 220% auto;

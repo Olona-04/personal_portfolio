@@ -6,8 +6,6 @@ import {
   X,
   FileText,
   Mail,
-  Phone,
-  MapPin,
   ExternalLink,
   Github,
   Linkedin,
@@ -18,11 +16,15 @@ import {
   CheckCircle2,
   Copy,
   Send,
-  Sparkles,
   Layers,
   Code2,
   Eye,
-  Rocket
+  Rocket,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
+  Maximize2
 } from 'lucide-react';
 
 interface Project {
@@ -52,7 +54,7 @@ const PROJECTS: Project[] = [
     title: 'AgriBot: AI Chatbot for Small-Scale Farmers',
     category: 'work',
     description:
-      'A chatbot that lets farmers describe a crop problem in everyday language. It asks up to three focused questions, then gives a likely cause with prevention tips and refers critical cases to an advisor. Built by Transformers Group, a team of 5.',
+      'A chatbot that lets farmers describe a crop problem in everyday language. It asks up to three focused questions, then gives a likely cause (not a diagnosis) with prevention tips, and refers serious cases to an advisor. Built by Transformers Group, a team of 5.',
     image: '/images/agribot.jpg',
     tags: ['Next.js', 'React', 'Tailwind CSS', 'OpenAI API', 'MongoDB'],
     liveUrl: 'https://agribot-silk.vercel.app'
@@ -62,7 +64,7 @@ const PROJECTS: Project[] = [
     title: 'MoodSpark: AI Sentiment Analysis',
     category: 'work',
     description:
-      'A mood and sentiment app that turns words into actionable insights. Features dual in-browser engines (VADER & transformer model) plus a daily mood journal comparing self-reported emotional valence to natural language sentiment.',
+      'A mood and sentiment app that turns words into actionable insights. Features dual in-browser engines (VADER & transformer model) plus a daily mood journal that checks how closely your words match your mood.',
     image: '/images/moodspark.jpg',
     tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'VADER', 'NLP'],
     liveUrl: 'https://sentimentai-2.ai.studio'
@@ -72,7 +74,7 @@ const PROJECTS: Project[] = [
     title: 'Content Generator & Social Publisher',
     category: 'work',
     description:
-      'An AI app that generates text, code, or images from prompts, enables tone and color palette selection, suggests trending hashtags, and coordinates publication across social channels.',
+      'An AI app that makes text, code or images from a prompt, lets you add a caption, then posts to your socials. It also suggests hashtags and has a prompt library, tone options and a colour palette picker.',
     image: '/images/content-generator.jpg',
     tags: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'Vercel'],
     liveUrl: 'https://content-generator-social-publisher.ai.studio'
@@ -82,7 +84,7 @@ const PROJECTS: Project[] = [
     title: 'Thrifting E-Commerce Website',
     category: 'school',
     description:
-      'A responsive thrift clothing e-commerce web platform. Built the PHP backend functionality, dynamic product display queries, and MySQL database connectivity for persistent catalog management.',
+      'A thrift clothing store with responsive pages. I built the PHP backend and database connection, so products display dynamically and their data is stored in MySQL.',
     isSvg: true,
     tags: ['HTML', 'CSS', 'Java', 'PHP', 'MySQL'],
     codeUrl: 'https://github.com/Olona-04'
@@ -92,7 +94,7 @@ const PROJECTS: Project[] = [
     title: 'NSFAS Mobile App Redesign',
     category: 'school',
     description:
-      'An interactive Figma prototype crafted to make South African student funding effortless to navigate. Covers authentication, document uploads, application status tracking, and allowance management.',
+      'An interactive prototype that makes student funding easier to access, with flows for login, applications, document uploads and dashboard tracking.',
     image: '/images/nsfas.jpg',
     tags: ['Figma', 'UI/UX', 'Wireframing', 'Prototyping', 'User-Centred Design'],
     figmaUrl: 'https://www.figma.com/design/XaPGadSKxAlvpft8yqSceh/Multimedia-Term-3?node-id=0-1&p=f&t=83lXfYdSV1BZFWle-0'
@@ -123,13 +125,43 @@ const CERTIFICATES: Certificate[] = [
   }
 ];
 
+const CV_PAGES = [
+  {
+    page: 1,
+    title: 'Curriculum Vitae',
+    subtitle: 'Career Objective, Skills, Projects, Experience & References',
+    image: '/images/cv/page_1.png'
+  },
+  {
+    page: 2,
+    title: 'Identity Document',
+    subtitle: 'Certified Copy of RSA National Identity Card',
+    image: '/images/cv/page_2.png'
+  },
+  {
+    page: 3,
+    title: 'National Senior Certificate',
+    subtitle: 'Matric Certificate – Bernadino Heights High School',
+    image: '/images/cv/page_3.png'
+  },
+  {
+    page: 4,
+    title: 'Higher Certificate in ICT',
+    subtitle: 'Cape Peninsula University of Technology (CPUT)',
+    image: '/images/cv/page_4.png'
+  }
+];
+
 export default function App() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>('light');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<'all' | 'work' | 'school'>('all');
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
   const [showVercelModal, setShowVercelModal] = useState(false);
   const [showCvModal, setShowCvModal] = useState(false);
+  const [cvCurrentPage, setCvCurrentPage] = useState<number>(1);
+  const [cvZoom, setCvZoom] = useState<number>(100);
+  const [cvViewMode, setCvViewMode] = useState<'document' | 'text'>('document');
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   // Contact form state
@@ -189,7 +221,7 @@ export default function App() {
     link.click();
     link.remove();
 
-    setFormStatus('Opening your default email app. Press Send there to deliver your message!');
+    setFormStatus('Opening your email app. Press Send there to deliver your message!');
   };
 
   const filteredProjects = activeCategory === 'all'
@@ -215,25 +247,25 @@ export default function App() {
             <a href="#certificates" className="hover:text-[var(--ink)] transition-colors">Certificates</a>
             <a href="#experience" className="hover:text-[var(--ink)] transition-colors">Experience</a>
             <a href="#contact" className="hover:text-[var(--ink)] transition-colors">Contact</a>
-            
+
             <button
               onClick={() => setShowCvModal(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--glow)] transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold border-1.5 border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--glow)] transition-all cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
-              CV
+              CV Preview
             </button>
 
             <a
               href="#contact"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--on-accent)] shadow-md hover:brightness-110 transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--on-accent)] shadow-md hover:brightness-105 transition-all"
             >
-              💬 Message
+              💬 Direct message
             </a>
 
             <button
               onClick={() => setShowVercelModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)] border border-[var(--line)] transition-all"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)] border border-[var(--line)] transition-all cursor-pointer"
               title="Vercel Deployment Guide"
             >
               <Rocket className="w-3.5 h-3.5 text-[var(--accent)]" />
@@ -246,7 +278,7 @@ export default function App() {
             <button
               onClick={toggleTheme}
               aria-label="Toggle dark/light mode"
-              className="w-10 h-10 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] flex items-center justify-center hover:border-[var(--accent)] transition-all"
+              className="w-10 h-10 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] flex items-center justify-center hover:border-[var(--accent)] transition-all cursor-pointer"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-slate-700" />}
             </button>
@@ -254,7 +286,7 @@ export default function App() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
-              className="md:hidden w-10 h-10 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] flex items-center justify-center"
+              className="md:hidden w-10 h-10 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] flex items-center justify-center cursor-pointer"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -320,19 +352,17 @@ export default function App() {
                   setMobileMenuOpen(false);
                   setShowCvModal(true);
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[var(--accent)] text-[var(--accent)] font-medium text-sm"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-1.5 border-[var(--accent)] text-[var(--accent)] font-semibold text-sm cursor-pointer"
               >
-                <FileText className="w-4 h-4" /> View &amp; Download CV
+                <FileText className="w-4 h-4" /> Preview CV (4 Pages)
               </button>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setShowVercelModal(true);
-                }}
+              <a
+                href="/OLONA_WILLIAMS_CV.pdf"
+                download="OLONA_WILLIAMS_CV.pdf"
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[var(--surface2)] text-[var(--ink)] border border-[var(--line)] font-medium text-sm"
               >
-                <Rocket className="w-4 h-4 text-[var(--accent)]" /> Vercel Deployment Guide
-              </button>
+                <Download className="w-4 h-4 text-[var(--accent)]" /> Download CV PDF
+              </a>
             </div>
           </div>
         )}
@@ -346,15 +376,15 @@ export default function App() {
             {/* Left Column */}
             <div className="lg:col-span-7 flex flex-col items-start">
               {/* Availability Badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] text-sm mb-6">
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] text-sm mb-6 shadow-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_10px_var(--accent)] animate-pulse" />
                 <span>Open to internships and junior roles</span>
               </div>
 
-              {/* Title */}
-              <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.08] mb-4">
+              {/* Big Display Hero Title */}
+              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.04] mb-4 text-[var(--heading)]">
                 Olona Metia{' '}
-                <span className="gradient-accent font-serif-italic block sm:inline">
+                <span className="font-serif-italic text-[var(--accent)] block sm:inline">
                   Williams.
                 </span>
               </h1>
@@ -367,12 +397,12 @@ export default function App() {
               {/* Bio */}
               <p className="text-[var(--muted)] text-base sm:text-lg max-w-xl mb-8 leading-relaxed">
                 Final-year IT student at CPUT who builds{' '}
-                <strong className="text-[var(--accent)] font-medium">web apps</strong> and designs{' '}
-                <strong className="text-[var(--accent2)] font-medium">app interfaces</strong>, from the PHP and MySQL behind an e-commerce store to the Figma screens people tap.
+                <strong className="text-[var(--accent)] font-semibold">web apps</strong> and designs{' '}
+                <strong className="text-[var(--accent)] font-semibold">app interfaces</strong>, from the PHP and MySQL behind a store to the Figma screens people tap.
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <div className="flex flex-wrap items-center gap-3.5 w-full sm:w-auto">
                 <a
                   href="#projects"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--on-accent)] shadow-[0_8px_30px_var(--glow)] hover:opacity-95 transition-all"
@@ -383,7 +413,7 @@ export default function App() {
 
                 <a
                   href="#contact"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--accent)] text-[var(--ink)] transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--accent)] text-[var(--ink)] transition-all shadow-sm"
                 >
                   <Mail className="w-4 h-4" />
                   Contact me
@@ -391,40 +421,36 @@ export default function App() {
 
                 <button
                   onClick={() => setShowCvModal(true)}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--accent)] text-[var(--ink)] transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm border-1.5 border-[var(--accent)] bg-[var(--surface)] hover:bg-[var(--glow)] text-[var(--accent)] transition-all cursor-pointer shadow-sm"
                 >
-                  <FileText className="w-4 h-4 text-[var(--accent)]" />
-                  CV Preview
+                  <Eye className="w-4 h-4" />
+                  Preview CV
                 </button>
 
                 <a
                   href="/OLONA_WILLIAMS_CV.pdf"
-                  download="Olona_Williams_CV.pdf"
+                  download="OLONA_WILLIAMS_CV.pdf"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-medium text-sm border border-[var(--line)] bg-[var(--surface2)] hover:border-[var(--accent)] text-[var(--muted)] hover:text-[var(--ink)] transition-all"
                   title="Direct PDF download"
                 >
                   <Download className="w-4 h-4" />
-                  PDF
+                  Download CV
                 </a>
               </div>
             </div>
 
-            {/* Right Column: Portrait */}
+            {/* Right Column: Portrait matching screenshot */}
             <div className="lg:col-span-5 flex justify-center order-first lg:order-last">
-              <div className="relative w-full max-w-[420px] aspect-[4/5] rounded-3xl border border-[var(--line)] overflow-hidden shadow-2xl bg-gradient-to-br from-[var(--surface2)] to-[var(--surface)] group">
+              <div className="relative w-full max-w-[440px] aspect-[4/5] rounded-[32px] border border-[var(--line)] overflow-hidden shadow-2xl bg-gradient-to-br from-[var(--surface2)] to-[var(--surface)] group">
                 <img
                   src="/images/olona.jpg"
                   alt="Olona Metia Williams"
-                  className="w-full h-full object-cover object-[center_18%] group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="w-full h-full object-cover object-[center_18%] group-hover:scale-103 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)]/90 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-4 left-4 right-4 bg-[var(--bg)]/80 backdrop-blur-md border border-[var(--line)] rounded-2xl p-3.5 flex items-center justify-between text-xs sm:text-sm">
-                  <div>
-                    <div className="font-semibold text-[var(--ink)]">Olona Williams</div>
-                    <div className="text-[var(--muted)]">Final-year · App Dev · CPUT</div>
-                  </div>
-                  <span className="px-2.5 py-1 rounded-full bg-[var(--accent)]/15 text-[var(--accent)] font-medium text-xs">
-                    Cape Town
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)]/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-5 left-5 right-5 bg-[var(--surface)]/90 dark:bg-[var(--bg)]/85 backdrop-blur-md border border-[var(--line)] rounded-2xl p-4 text-center shadow-lg">
+                  <span className="text-sm font-medium text-[var(--ink)]">
+                    Final-year · Application Development · CPUT
                   </span>
                 </div>
               </div>
@@ -433,57 +459,51 @@ export default function App() {
         </section>
 
         {/* ABOUT SECTION */}
-        <section id="about" className="py-20 border-t border-[var(--line)]/50">
+        <section id="about" className="py-24 border-t border-[var(--line)]/50">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-              <span className="w-7 h-[2px] bg-[var(--accent)]" />
-              ABOUT
-            </div>
+            <div className="section-eyebrow">ABOUT</div>
 
-            <h2 className="text-3xl sm:text-5xl font-bold mb-10 tracking-tight">
-              Building things that <span className="font-serif-italic gradient-accent">work</span> and feel good to use.
+            <h2 className="display-heading mb-8">
+              Building things that <span className="serif-part">work</span> and feel good to use.
             </h2>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
               {/* Narrative */}
               <div className="lg:col-span-7 space-y-5 text-base sm:text-lg text-[var(--muted)] leading-relaxed">
                 <p>
                   I'm a final-year Information Technology (Application Development) student at Cape Peninsula University of Technology. I like turning an idea into something people can use, from the database underneath to the screen on top.
                 </p>
                 <p>
-                  My projects have covered both sides of modern computing: building dynamic PHP backends and MySQL connections for an e-commerce thrift platform, crafting interactive Figma prototypes for student funding applications, and engineering AI-grounded apps using React, TypeScript, Next.js, and Node.js.
-                </p>
-                <p>
-                  I'm seeking an internship or junior software developer role where I can contribute to real-world user value, collaborate with supportive mentors, and continuously ship clean, robust code.
+                  My group projects have covered both sides: the PHP backend and database connection for a thrift clothing store, and an interactive Figma prototype for a student-funding app. I'm looking for an internship or junior developer role where I can keep learning while shipping real work.
                 </p>
               </div>
 
               {/* Quick Fact Cards */}
-              <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-4 sm:p-5">
-                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1 uppercase">Studying</div>
-                  <div className="font-medium text-sm sm:text-base text-[var(--ink)]">National Diploma, IT</div>
+              <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-5 shadow-sm">
+                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1.5 uppercase">Studying</div>
+                  <div className="font-semibold text-sm sm:text-base text-[var(--ink)]">National Diploma, IT</div>
                   <div className="text-xs text-[var(--muted)] mt-0.5">Application Development (CPUT)</div>
                 </div>
 
-                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-4 sm:p-5">
-                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1 uppercase">Completed</div>
-                  <div className="font-medium text-sm sm:text-base text-[var(--ink)]">Higher Certificate, ICT</div>
-                  <div className="text-xs text-[var(--muted)] mt-0.5">CPUT · 2024</div>
+                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-5 shadow-sm">
+                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1.5 uppercase">Completed</div>
+                  <div className="font-semibold text-sm sm:text-base text-[var(--ink)]">Higher Certificate in ICT</div>
+                  <div className="text-xs text-[var(--muted)] mt-0.5">CPUT · Completed 2024</div>
                 </div>
 
-                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-4 sm:p-5">
-                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1 uppercase">Based in</div>
-                  <div className="font-medium text-sm sm:text-base text-[var(--ink)]">Kraaifontein, Cape Town</div>
+                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-5 shadow-sm">
+                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1.5 uppercase">Based in</div>
+                  <div className="font-semibold text-sm sm:text-base text-[var(--ink)]">Kraaifontein, Cape Town</div>
                   <div className="text-xs text-[var(--muted)] mt-0.5">Western Cape, South Africa</div>
                 </div>
 
-                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-4 sm:p-5">
-                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1 uppercase">Status</div>
-                  <div className="font-medium text-sm sm:text-base text-[var(--accent)] flex items-center gap-1.5">
+                <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-5 shadow-sm">
+                  <div className="text-[11px] font-bold text-[var(--accent)] tracking-wider mb-1.5 uppercase">Status</div>
+                  <div className="font-semibold text-sm sm:text-base text-[var(--accent)] flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4" /> Open to work
                   </div>
-                  <div className="text-xs text-[var(--muted)] mt-0.5">Internship / Junior Developer</div>
+                  <div className="text-xs text-[var(--muted)] mt-0.5">Internships &amp; Junior Roles</div>
                 </div>
               </div>
             </div>
@@ -491,97 +511,95 @@ export default function App() {
         </section>
 
         {/* SKILLS SECTION */}
-        <section id="skills" className="py-20 border-t border-[var(--line)]/50">
+        <section id="skills" className="py-24 border-t border-[var(--line)]/50">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-              <span className="w-7 h-[2px] bg-[var(--accent)]" />
-              SKILLS
-            </div>
+            <div className="section-eyebrow">SKILLS</div>
 
-            <h2 className="text-3xl sm:text-5xl font-bold mb-3 tracking-tight">
-              What I work <span className="font-serif-italic gradient-accent">with.</span>
+            <h2 className="display-heading mb-4">
+              What I work <span className="serif-part">with.</span>
             </h2>
-            <p className="text-[var(--muted)] text-base mb-10 max-w-xl">
-              Languages, frameworks, design systems, and developer tools applied in coursework, capstone projects, and AI prototypes.
+            <p className="text-[var(--muted)] text-base sm:text-lg mb-12 max-w-xl">
+              The tools I've used in coursework, group projects, and real applications.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Programming Languages */}
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 hover:border-[var(--accent)] transition-all group">
-                <div className="w-11 h-11 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 shadow-sm hover:border-[var(--accent)] transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-5 group-hover:scale-105 transition-transform">
                   &lt;/&gt;
                 </div>
-                <h3 className="text-lg font-bold mb-3 text-[var(--ink)]">Programming Languages</h3>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  {['Python', 'Java', 'JavaScript (ES6+)', 'TypeScript', 'PHP', 'SQL'].map((s) => (
+                <h3 className="text-xl font-bold mb-4 text-[var(--ink)]">Programming languages</h3>
+                <ul className="space-y-2.5 text-sm text-[var(--muted)]">
+                  {['Python', 'Java', 'JavaScript', 'TypeScript', 'PHP', 'SQL'].map((s) => (
                     <li key={s} className="flex items-center gap-2">
-                      <span className="text-[var(--accent)]">›</span> {s}
+                      <span className="text-[var(--accent)] font-bold">›</span> {s}
                     </li>
                   ))}
                 </ul>
               </div>
 
               {/* Frameworks & Libraries */}
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 hover:border-[var(--accent)] transition-all group">
-                <div className="w-11 h-11 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 shadow-sm hover:border-[var(--accent)] transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-lg mb-5 group-hover:scale-105 transition-transform">
                   ⚛
                 </div>
-                <h3 className="text-lg font-bold mb-3 text-[var(--ink)]">Frameworks &amp; Libraries</h3>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  {['React', 'Next.js', 'Node.js & Express', 'Tailwind CSS', 'Vite'].map((s) => (
+                <h3 className="text-xl font-bold mb-4 text-[var(--ink)]">Frameworks &amp; libraries</h3>
+                <ul className="space-y-2.5 text-sm text-[var(--muted)]">
+                  {['React', 'Next.js', 'Node.js', 'Express', 'Tailwind CSS', 'Vite'].map((s) => (
                     <li key={s} className="flex items-center gap-2">
-                      <span className="text-[var(--accent)]">›</span> {s}
+                      <span className="text-[var(--accent)] font-bold">›</span> {s}
                     </li>
                   ))}
                 </ul>
               </div>
 
               {/* Web & Databases */}
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 hover:border-[var(--accent)] transition-all group">
-                <div className="w-11 h-11 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 shadow-sm hover:border-[var(--accent)] transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-5 group-hover:scale-105 transition-transform">
                   DB
                 </div>
-                <h3 className="text-lg font-bold mb-3 text-[var(--ink)]">Web &amp; Databases</h3>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  {['HTML5 & Semantic Markup', 'CSS3 & Modern Layouts', 'MySQL / Relational DBs', 'MongoDB', 'Database Connectivity'].map((s) => (
+                <h3 className="text-xl font-bold mb-4 text-[var(--ink)]">Web &amp; databases</h3>
+                <ul className="space-y-2.5 text-sm text-[var(--muted)]">
+                  {['HTML', 'CSS', 'MySQL', 'MongoDB', 'Database connectivity'].map((s) => (
                     <li key={s} className="flex items-center gap-2">
-                      <span className="text-[var(--accent)]">›</span> {s}
+                      <span className="text-[var(--accent)] font-bold">›</span> {s}
                     </li>
                   ))}
                 </ul>
               </div>
 
               {/* UI/UX Design */}
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 hover:border-[var(--accent)] transition-all group">
-                <div className="w-11 h-11 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 shadow-sm hover:border-[var(--accent)] transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-5 group-hover:scale-105 transition-transform">
                   UI
                 </div>
-                <h3 className="text-lg font-bold mb-3 text-[var(--ink)]">UI / UX Design</h3>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  {['Figma Wireframing', 'Interactive Prototyping', 'User-Centred Design', 'Component Design Systems', 'Mobile-First Responsive UX'].map((s) => (
+                <h3 className="text-xl font-bold mb-4 text-[var(--ink)]">Design</h3>
+                <ul className="space-y-2.5 text-sm text-[var(--muted)]">
+                  {['UI/UX design', 'Figma', 'Wireframing', 'Prototyping'].map((s) => (
                     <li key={s} className="flex items-center gap-2">
-                      <span className="text-[var(--accent)]">›</span> {s}
+                      <span className="text-[var(--accent)] font-bold">›</span> {s}
                     </li>
                   ))}
                 </ul>
               </div>
 
               {/* Tools & Workflow */}
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 hover:border-[var(--accent)] transition-all group lg:col-span-2">
-                <div className="w-11 h-11 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-4 group-hover:scale-110 transition-transform">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 shadow-sm hover:border-[var(--accent)] transition-all group lg:col-span-2">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center font-bold text-base mb-5 group-hover:scale-105 transition-transform">
                   Git
                 </div>
-                <h3 className="text-lg font-bold mb-3 text-[var(--ink)]">Tools, Cloud &amp; Methodology</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-[var(--muted)]">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2"><span className="text-[var(--accent)]">›</span> Git Version Control &amp; GitHub</div>
-                    <div className="flex items-center gap-2"><span className="text-[var(--accent)]">›</span> Vercel Cloud Deployment</div>
-                    <div className="flex items-center gap-2"><span className="text-[var(--accent)]">›</span> RESTful APIs &amp; OpenAI Integration</div>
+                <h3 className="text-xl font-bold mb-4 text-[var(--ink)]">Tools &amp; practice</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-[var(--muted)]">
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> Git version control</div>
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> GitHub</div>
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> Vercel</div>
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> OpenAI API</div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2"><span className="text-[var(--accent)]">›</span> AI-assisted Development Workflows</div>
-                    <div className="flex items-center gap-2"><span className="text-[var(--accent)]">›</span> Cross-functional Team Collaboration</div>
-                    <div className="flex items-center gap-2"><span className="text-[var(--accent)]">›</span> Problem Solving &amp; Debugging</div>
+                  <div className="space-y-2.5">
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> AI-assisted development</div>
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> Team collaboration</div>
+                    <div className="flex items-center gap-2"><span className="text-[var(--accent)] font-bold">›</span> User-centred design</div>
                   </div>
                 </div>
               </div>
@@ -590,30 +608,27 @@ export default function App() {
         </section>
 
         {/* PROJECTS SECTION */}
-        <section id="projects" className="py-20 border-t border-[var(--line)]/50">
+        <section id="projects" className="py-24 border-t border-[var(--line)]/50">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-              <span className="w-7 h-[2px] bg-[var(--accent)]" />
-              PROJECTS
-            </div>
+            <div className="section-eyebrow">PROJECTS</div>
 
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
               <div>
-                <h2 className="text-3xl sm:text-5xl font-bold mb-3 tracking-tight">
-                  Selected <span className="font-serif-italic gradient-accent">work.</span>
+                <h2 className="display-heading mb-4">
+                  Selected <span className="serif-part">work.</span>
                 </h2>
-                <p className="text-[var(--muted)] text-base max-w-xl">
-                  Projects built for live industry tools and academic coursework at CPUT.
+                <p className="text-[var(--muted)] text-base sm:text-lg max-w-xl">
+                  The projects I built for work, and the ones from my studies at CPUT.
                 </p>
               </div>
 
               {/* Category Filter Pills */}
-              <div className="inline-flex items-center gap-1.5 p-1 rounded-xl bg-[var(--surface)] border border-[var(--line)]">
+              <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow-sm">
                 <button
                   onClick={() => setActiveCategory('all')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                     activeCategory === 'all'
-                      ? 'bg-[var(--accent)] text-[var(--on-accent)] font-semibold'
+                      ? 'bg-[var(--accent)] text-[var(--on-accent)] shadow-sm'
                       : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
@@ -621,19 +636,19 @@ export default function App() {
                 </button>
                 <button
                   onClick={() => setActiveCategory('work')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                     activeCategory === 'work'
-                      ? 'bg-[var(--accent)] text-[var(--on-accent)] font-semibold'
+                      ? 'bg-[var(--accent)] text-[var(--on-accent)] shadow-sm'
                       : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
-                  Work Apps (3)
+                  Work Projects (3)
                 </button>
                 <button
                   onClick={() => setActiveCategory('school')}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                     activeCategory === 'school'
-                      ? 'bg-[var(--accent)] text-[var(--on-accent)] font-semibold'
+                      ? 'bg-[var(--accent)] text-[var(--on-accent)] shadow-sm'
                       : 'text-[var(--muted)] hover:text-[var(--ink)]'
                   }`}
                 >
@@ -643,19 +658,19 @@ export default function App() {
             </div>
 
             {/* Project Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
               {filteredProjects.map((project) => (
                 <article
                   key={project.id}
-                  className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl overflow-hidden flex flex-col hover:border-[var(--accent)] transition-all group"
+                  className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl overflow-hidden flex flex-col hover:border-[var(--accent)] transition-all shadow-sm group"
                 >
                   {/* Thumbnail */}
-                  <div className="h-52 bg-[var(--surface2)] overflow-hidden relative border-b border-[var(--line)]">
+                  <div className="h-56 bg-[var(--surface2)] overflow-hidden relative border-b border-[var(--line)]">
                     {project.image ? (
                       <img
                         src={project.image}
                         alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                        className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
                       />
                     ) : project.isSvg ? (
                       <div className="w-full h-full flex items-center justify-center bg-[var(--surface2)] p-4">
@@ -694,17 +709,17 @@ export default function App() {
                       </div>
                     ) : null}
 
-                    {/* Category pill */}
+                    {/* Category badge */}
                     <div className="absolute top-3 right-3">
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wider uppercase bg-[var(--bg)]/90 backdrop-blur-md border border-[var(--line)] text-[var(--accent)]">
-                        {project.category === 'work' ? 'Work Project' : 'CPUT Project'}
+                      <span className="px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[var(--bg)]/90 backdrop-blur-md border border-[var(--line)] text-[var(--accent)] shadow-sm">
+                        {project.category === 'work' ? 'WORK' : 'SCHOOL'}
                       </span>
                     </div>
                   </div>
 
                   {/* Body */}
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-xl font-bold mb-2 text-[var(--ink)] leading-snug">
+                  <div className="p-6 sm:p-7 flex flex-col flex-1">
+                    <h3 className="text-xl font-bold mb-2.5 text-[var(--ink)] leading-snug">
                       {project.title}
                     </h3>
                     <p className="text-sm text-[var(--muted)] mb-5 leading-relaxed flex-1">
@@ -712,11 +727,11 @@ export default function App() {
                     </p>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5 mb-5">
+                    <div className="flex flex-wrap gap-2 mb-6">
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="px-2.5 py-0.5 rounded-md bg-[var(--surface2)] text-[12px] text-[var(--muted)] border border-[var(--line)]"
+                          className="px-2.5 py-1 rounded-lg bg-[var(--surface2)] text-xs font-medium text-[var(--muted)] border border-[var(--line)]"
                         >
                           {tag}
                         </span>
@@ -724,7 +739,7 @@ export default function App() {
                     </div>
 
                     {/* Links */}
-                    <div className="flex items-center gap-4 pt-3 border-t border-[var(--line)]/60 text-sm font-semibold">
+                    <div className="flex items-center gap-4 pt-4 border-t border-[var(--line)] text-sm font-semibold">
                       {project.liveUrl && (
                         <a
                           href={project.liveUrl}
@@ -732,7 +747,7 @@ export default function App() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-[var(--accent)] hover:underline"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" /> Live Demo
+                          <ExternalLink className="w-4 h-4" /> Live demo
                         </a>
                       )}
                       {project.figmaUrl && (
@@ -742,7 +757,7 @@ export default function App() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-[var(--accent)] hover:underline"
                         >
-                          <Eye className="w-3.5 h-3.5" /> View in Figma
+                          <Eye className="w-4 h-4" /> View in Figma
                         </a>
                       )}
                       {project.codeUrl && (
@@ -752,7 +767,7 @@ export default function App() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 text-[var(--muted)] hover:text-[var(--ink)]"
                         >
-                          <Github className="w-3.5 h-3.5" /> Source Code
+                          <Github className="w-4 h-4" /> Code
                         </a>
                       )}
                     </div>
@@ -763,170 +778,163 @@ export default function App() {
           </div>
         </section>
 
-        {/* EDUCATION & CERTIFICATES */}
-        <section id="education" className="py-20 border-t border-[var(--line)]/50">
+        {/* EDUCATION SECTION (MATCHING SCREENSHOT) */}
+        <section id="education" className="py-24 border-t border-[var(--line)]/50">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-              <span className="w-7 h-[2px] bg-[var(--accent)]" />
-              EDUCATION
-            </div>
+            <div className="section-eyebrow">EDUCATION</div>
 
-            <h2 className="text-3xl sm:text-5xl font-bold mb-10 tracking-tight">
-              Where I've <span className="font-serif-italic gradient-accent">studied.</span>
+            <h2 className="display-heading mb-12">
+              Where I've <span className="serif-part">studied.</span>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 flex gap-4 items-start hover:border-[var(--accent)] transition-all">
-                <div className="w-12 h-12 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                  <GraduationCap className="w-6 h-6" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 flex gap-5 items-start hover:border-[var(--accent)] transition-all shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center shrink-0">
+                  <GraduationCap className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--ink)]">National Diploma, IT</h3>
-                  <p className="text-sm text-[var(--accent)] font-medium">Application Development · CPUT</p>
-                  <p className="text-xs text-[var(--muted)] mt-1">Currently enrolled (final year)</p>
+                  <h3 className="text-xl font-bold text-[var(--ink)] mb-1">National Diploma, IT</h3>
+                  <p className="text-sm text-[var(--accent)] font-semibold">Application Development · CPUT</p>
+                  <p className="text-xs text-[var(--muted)] mt-1.5">Currently enrolled (final year)</p>
                 </div>
               </div>
 
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 flex gap-4 items-start hover:border-[var(--accent)] transition-all">
-                <div className="w-12 h-12 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                  <Award className="w-6 h-6" />
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 flex gap-5 items-start hover:border-[var(--accent)] transition-all shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center shrink-0">
+                  <Award className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--ink)]">Higher Certificate, ICT</h3>
-                  <p className="text-sm text-[var(--accent)] font-medium">Cape Peninsula University of Tech</p>
-                  <p className="text-xs text-[var(--muted)] mt-1">Completed 2024</p>
+                  <h3 className="text-xl font-bold text-[var(--ink)] mb-1">Higher Certificate, ICT</h3>
+                  <p className="text-sm text-[var(--accent)] font-semibold">Cape Peninsula University of Technology</p>
+                  <p className="text-xs text-[var(--muted)] mt-1.5">Completed 2024</p>
                 </div>
               </div>
 
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 flex gap-4 items-start hover:border-[var(--accent)] transition-all">
-                <div className="w-12 h-12 rounded-xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center shrink-0">
-                  <Code2 className="w-6 h-6" />
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 flex gap-5 items-start hover:border-[var(--accent)] transition-all shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-[var(--surface2)] text-[var(--accent)] flex items-center justify-center shrink-0">
+                  <Code2 className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[var(--ink)]">Matric (Grade 12)</h3>
-                  <p className="text-sm text-[var(--accent)] font-medium">Bernadino Heights High School</p>
-                  <p className="text-xs text-[var(--muted)] mt-1">Completed 2020</p>
+                  <h3 className="text-xl font-bold text-[var(--ink)] mb-1">Matric (Grade 12)</h3>
+                  <p className="text-sm text-[var(--accent)] font-semibold">Bernadino Heights High School</p>
+                  <p className="text-xs text-[var(--muted)] mt-1.5">Completed 2020</p>
                 </div>
-              </div>
-            </div>
-
-            {/* CERTIFICATES */}
-            <div id="certificates">
-              <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-                <span className="w-7 h-[2px] bg-[var(--accent)]" />
-                CERTIFICATES
-              </div>
-
-              <h2 className="text-3xl sm:text-5xl font-bold mb-10 tracking-tight">
-                My <span className="font-serif-italic gradient-accent">certificates.</span>
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {CERTIFICATES.map((cert) => (
-                  <div
-                    key={cert.title}
-                    className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-5 hover:border-[var(--accent)] transition-all text-center sm:text-left"
-                  >
-                    <button
-                      onClick={() => setSelectedCert(cert)}
-                      className="shrink-0 group relative cursor-pointer"
-                      title="Click to view badge"
-                    >
-                      <img
-                        src={cert.image}
-                        alt={cert.title}
-                        className="w-24 h-24 rounded-full object-cover bg-white border-2 border-[var(--line)] group-hover:scale-105 transition-transform"
-                      />
-                      <span className="absolute inset-0 rounded-full bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity">
-                        <Eye className="w-5 h-5" />
-                      </span>
-                    </button>
-
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-[var(--ink)] leading-snug mb-1">
-                        {cert.title}
-                      </h3>
-                      <div className="text-xs font-semibold text-[var(--accent)] mb-1">
-                        {cert.issuer}
-                      </div>
-                      <div className="text-xs text-[var(--muted)] mb-3">
-                        {cert.date}
-                      </div>
-                      <div className="flex items-center gap-3 justify-center sm:justify-start">
-                        <a
-                          href={cert.verifyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--accent)] hover:underline"
-                        >
-                          Verify Badge <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* EXPERIENCE SECTION */}
-        <section id="experience" className="py-20 border-t border-[var(--line)]/50">
+        {/* CERTIFICATES SECTION (MATCHING SCREENSHOT) */}
+        <section id="certificates" className="py-24 border-t border-[var(--line)]/50">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-              <span className="w-7 h-[2px] bg-[var(--accent)]" />
-              EXPERIENCE
-            </div>
+            <div className="section-eyebrow">CERTIFICATES</div>
 
-            <h2 className="text-3xl sm:text-5xl font-bold mb-10 tracking-tight">
-              Work <span className="font-serif-italic gradient-accent">experience.</span>
+            <h2 className="display-heading mb-12">
+              My <span className="serif-part">certificates.</span>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 sm:p-8 hover:border-[var(--accent)] transition-all">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {CERTIFICATES.map((cert) => (
+                <div
+                  key={cert.title}
+                  className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 shadow-sm hover:border-[var(--accent)] transition-all flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left group"
+                >
+                  <button
+                    onClick={() => setSelectedCert(cert)}
+                    className="shrink-0 group relative cursor-pointer"
+                    title="Click to view badge"
+                  >
+                    <img
+                      src={cert.image}
+                      alt={cert.title}
+                      className="w-28 h-28 rounded-full object-cover bg-white border border-[var(--line)] group-hover:scale-105 transition-transform shadow-sm"
+                    />
+                    <span className="absolute inset-0 rounded-full bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity">
+                      <Eye className="w-6 h-6" />
+                    </span>
+                  </button>
+
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-[var(--ink)] leading-snug mb-1.5">
+                      {cert.title}
+                    </h3>
+                    <div className="text-sm font-semibold text-[var(--accent)] mb-1">
+                      {cert.issuer}
+                    </div>
+                    <div className="text-xs text-[var(--muted)] mb-3">
+                      {cert.date}
+                    </div>
+                    <div>
+                      <a
+                        href={cert.verifyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block text-sm font-semibold text-[var(--accent)] underline hover:text-[var(--accent2)] transition-colors"
+                      >
+                        View badge
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* EXPERIENCE SECTION */}
+        <section id="experience" className="py-24 border-t border-[var(--line)]/50">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8">
+            <div className="section-eyebrow">EXPERIENCE</div>
+
+            <h2 className="display-heading mb-12">
+              Work <span className="serif-part">experience.</span>
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 sm:p-9 hover:border-[var(--accent)] transition-all shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <Briefcase className="w-5 h-5 text-[var(--accent)]" />
-                  <h3 className="text-xl font-bold text-[var(--ink)]">Educator Assistant</h3>
+                  <Briefcase className="w-6 h-6 text-[var(--accent)]" />
+                  <h3 className="text-2xl font-bold text-[var(--ink)]">Educator Assistant</h3>
                 </div>
-                <div className="text-sm font-semibold text-[var(--accent)] mb-4">
-                  Northpine Technical High School · 2021 – 2022
+                <div className="text-sm font-semibold text-[var(--accent)] mb-5">
+                  Northpine Technical High School · 2021–2022
                 </div>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-[var(--accent)] font-bold">›</span>
-                    <span>Assisted educators with classroom preparation and administrative duties.</span>
+                <ul className="space-y-3 text-sm sm:text-base text-[var(--muted)]">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-[var(--accent)] font-bold text-lg leading-none">›</span>
+                    <span>Assisted educators with classroom preparation and admin</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[var(--accent)] font-bold">›</span>
-                    <span>Supported learners with academic activities and problem-solving tasks.</span>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-[var(--accent)] font-bold text-lg leading-none">›</span>
+                    <span>Supported learners with academic activities and problem-solving</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[var(--accent)] font-bold">›</span>
-                    <span>Managed mark sheets and educational records accurately and securely.</span>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-[var(--accent)] font-bold text-lg leading-none">›</span>
+                    <span>Managed mark sheets and educational records</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 sm:p-8 hover:border-[var(--accent)] transition-all">
+              <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-7 sm:p-9 hover:border-[var(--accent)] transition-all shadow-sm">
                 <div className="flex items-center gap-3 mb-2">
-                  <Briefcase className="w-5 h-5 text-[var(--accent)]" />
-                  <h3 className="text-xl font-bold text-[var(--ink)]">General Assistant</h3>
+                  <Briefcase className="w-6 h-6 text-[var(--accent)]" />
+                  <h3 className="text-2xl font-bold text-[var(--ink)]">General Assistant</h3>
                 </div>
-                <div className="text-sm font-semibold text-[var(--accent)] mb-4">
-                  Giant Hyper · Nov 2018 – Dec 2018
+                <div className="text-sm font-semibold text-[var(--accent)] mb-5">
+                  Giant Hyper · Nov–Dec 2018
                 </div>
-                <ul className="space-y-2 text-sm text-[var(--muted)]">
-                  <li className="flex items-start gap-2">
-                    <span className="text-[var(--accent)] font-bold">›</span>
-                    <span>Assisted customers with product enquiries and provided friendly customer support.</span>
+                <ul className="space-y-3 text-sm sm:text-base text-[var(--muted)]">
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-[var(--accent)] font-bold text-lg leading-none">›</span>
+                    <span>Helped customers with product enquiries</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[var(--accent)] font-bold">›</span>
-                    <span>Supported retail operations including stocking shelves and organizing merchandise displays.</span>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-[var(--accent)] font-bold text-lg leading-none">›</span>
+                    <span>Stocked shelves and organised merchandise displays</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-[var(--accent)] font-bold">›</span>
-                    <span>Promoted products effectively to maintain high levels of customer satisfaction.</span>
+                  <li className="flex items-start gap-2.5">
+                    <span className="text-[var(--accent)] font-bold text-lg leading-none">›</span>
+                    <span>Promoted products and kept customer satisfaction high</span>
                   </li>
                 </ul>
               </div>
@@ -935,92 +943,73 @@ export default function App() {
         </section>
 
         {/* CONTACT SECTION */}
-        <section id="contact" className="py-20 border-t border-[var(--line)]/50">
+        <section id="contact" className="py-24 border-t border-[var(--line)]/50">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-6 sm:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+            <div className="bg-[var(--surface)] border border-[var(--line)] rounded-[36px] p-7 sm:p-14 lg:p-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 shadow-md">
               {/* Left Column: Direct Info */}
               <div className="lg:col-span-6 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-3 text-xs font-semibold tracking-widest text-[var(--accent)] mb-3">
-                    <span className="w-7 h-[2px] bg-[var(--accent)]" />
-                    CONTACT
-                  </div>
+                  <div className="section-eyebrow">CONTACT</div>
 
-                  <h2 className="text-3xl sm:text-5xl font-bold mb-4 tracking-tight">
-                    Let's <span className="font-serif-italic gradient-accent">talk.</span>
+                  <h2 className="display-heading mb-4">
+                    Let's <span className="serif-part">talk.</span>
                   </h2>
 
-                  <p className="text-[var(--muted)] text-base mb-6 leading-relaxed">
-                    Looking for a dedicated junior application developer or intern? Send me a message, drop an email, or connect via LinkedIn and GitHub.
+                  <p className="text-[var(--muted)] text-base sm:text-lg mb-8 leading-relaxed">
+                    Looking for a junior developer or intern? Send me an email and I'll get back to you.
                   </p>
 
-                  <div className="space-y-4 mb-8">
+                  <div className="space-y-5 mb-10">
                     <div>
-                      <div className="text-xs uppercase tracking-wider text-[var(--muted)] font-semibold mb-1">
-                        Personal Email
-                      </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <a
                           href="mailto:olonawilliams04@gmail.com"
-                          className="text-lg sm:text-xl font-bold text-[var(--accent)] hover:underline break-all"
+                          className="text-xl sm:text-2xl lg:text-3xl font-bold text-[var(--accent)] hover:underline break-all"
                         >
                           olonawilliams04@gmail.com
                         </a>
                         <button
                           onClick={() => handleCopyEmail('olonawilliams04@gmail.com')}
-                          className="p-1.5 rounded-lg border border-[var(--line)] bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)]"
-                          title="Copy email"
+                          className="p-2 rounded-xl border border-[var(--line)] bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
+                          title="Copy email address"
                         >
-                          {copiedEmail ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                          {copiedEmail ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
                         </button>
                       </div>
                     </div>
 
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-[var(--muted)] font-semibold mb-1">
-                        CPUT Student Email
-                      </div>
-                      <a
-                        href="mailto:221630635@mycput.ac.za"
-                        className="text-base text-[var(--muted)] hover:text-[var(--ink)] transition-colors"
-                      >
-                        221630635@mycput.ac.za
-                      </a>
-                    </div>
-
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-[var(--muted)] font-semibold mb-1">
-                        Phone / WhatsApp
-                      </div>
-                      <div className="flex flex-wrap gap-4 text-base text-[var(--ink)] font-medium">
-                        <a href="tel:+27627700449" className="hover:text-[var(--accent)]">
-                          📞 062 770 0449
-                        </a>
-                        <a href="tel:+27834188608" className="hover:text-[var(--accent)]">
-                          📞 083 418 8608
-                        </a>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-[var(--muted)] font-semibold mb-1">
-                        Location
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-[var(--muted)]">
-                        <MapPin className="w-4 h-4 text-[var(--accent)]" />
-                        Kraaifontein, Cape Town, 7570, South Africa
-                      </div>
+                    <div className="text-sm text-[var(--muted)]">
+                      Student email: <a href="mailto:221630635@mycput.ac.za" className="text-[var(--accent)] hover:underline font-medium">221630635@mycput.ac.za</a>
                     </div>
                   </div>
                 </div>
 
-                {/* Social links */}
+                {/* Quick Contact & CV Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3 pt-6 border-t border-[var(--line)]">
+                  <a
+                    href="tel:+27627700449"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--on-accent)] shadow-[0_6px_20px_var(--glow)]"
+                  >
+                    📞 062 770 0449
+                  </a>
+                  <button
+                    onClick={() => setShowCvModal(true)}
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm border-1.5 border-[var(--accent)] bg-[var(--surface)] text-[var(--accent)] hover:bg-[var(--glow)] cursor-pointer"
+                  >
+                    <Eye className="w-4 h-4" /> Preview CV
+                  </button>
+                  <a
+                    href="/OLONA_WILLIAMS_CV.pdf"
+                    download="OLONA_WILLIAMS_CV.pdf"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl font-medium text-sm border border-[var(--line)] bg-[var(--surface2)] text-[var(--ink)] hover:border-[var(--accent)]"
+                  >
+                    <Download className="w-4 h-4" /> Download CV
+                  </a>
                   <a
                     href="https://github.com/Olona-04"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--line)] bg-[var(--surface2)] hover:border-[var(--accent)] text-xs font-semibold text-[var(--ink)]"
+                    className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[var(--line)] bg-[var(--surface2)] text-xs font-semibold text-[var(--ink)] hover:border-[var(--accent)]"
                   >
                     <Github className="w-4 h-4" /> GitHub
                   </a>
@@ -1028,16 +1017,9 @@ export default function App() {
                     href="https://www.linkedin.com/in/olona-williams-5797653b1/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--line)] bg-[var(--surface2)] hover:border-[var(--accent)] text-xs font-semibold text-[var(--ink)]"
+                    className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-[var(--line)] bg-[var(--surface2)] text-xs font-semibold text-[var(--ink)] hover:border-[var(--accent)]"
                   >
-                    <Linkedin className="w-4 h-4 text-sky-400" /> LinkedIn
-                  </a>
-                  <a
-                    href="/OLONA_WILLIAMS_CV.pdf"
-                    download="Olona_Williams_CV.pdf"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[var(--line)] bg-[var(--surface2)] hover:border-[var(--accent)] text-xs font-semibold text-[var(--ink)]"
-                  >
-                    <Download className="w-4 h-4 text-[var(--accent)]" /> Download CV
+                    <Linkedin className="w-4 h-4 text-sky-500" /> LinkedIn
                   </a>
                 </div>
               </div>
@@ -1045,11 +1027,12 @@ export default function App() {
               {/* Right Column: Direct Message Form */}
               <div className="lg:col-span-6">
                 <form
+                  id="msg"
                   onSubmit={handleSendMessage}
-                  className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 sm:p-8 flex flex-col gap-4 shadow-lg"
+                  className="bg-[var(--bg)] border border-[var(--line)] rounded-3xl p-6 sm:p-8 flex flex-col gap-4 shadow-sm"
                 >
-                  <h3 className="text-xl font-bold text-[var(--ink)] flex items-center gap-2">
-                    <Send className="w-5 h-5 text-[var(--accent)]" /> Send me a message
+                  <h3 className="text-2xl font-bold text-[var(--ink)] flex items-center gap-2">
+                    Send me a message
                   </h3>
 
                   <div>
@@ -1057,11 +1040,12 @@ export default function App() {
                       Your name
                     </label>
                     <input
+                      name="name"
                       type="text"
                       required
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
-                      placeholder="e.g. Sarah Jenkins"
+                      placeholder="e.g. Hiring Manager"
                       className="w-full px-4 py-3 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--accent)] transition-colors"
                     />
                   </div>
@@ -1071,11 +1055,12 @@ export default function App() {
                       Your email
                     </label>
                     <input
+                      name="email"
                       type="email"
                       required
                       value={formEmail}
                       onChange={(e) => setFormEmail(e.target.value)}
-                      placeholder="e.g. sarah@company.com"
+                      placeholder="e.g. recruiter@company.com"
                       className="w-full px-4 py-3 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--accent)] transition-colors"
                     />
                   </div>
@@ -1085,31 +1070,32 @@ export default function App() {
                       Message
                     </label>
                     <textarea
+                      name="message"
                       required
                       rows={4}
                       value={formMessage}
                       onChange={(e) => setFormMessage(e.target.value)}
-                      placeholder="Hi Olona, I came across your portfolio and would like to discuss an opportunity..."
+                      placeholder="Hi Olona, I'd like to talk about an opportunity at..."
                       className="w-full px-4 py-3 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-sm text-[var(--ink)] focus:outline-none focus:border-[var(--accent)] transition-colors resize-y"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--on-accent)] shadow-[0_8px_20px_var(--glow)] hover:brightness-105 transition-all flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--accent)] to-[var(--accent2)] text-[var(--on-accent)] shadow-[0_8px_20px_var(--glow)] hover:brightness-105 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Send className="w-4 h-4" /> Send message
                   </button>
 
-                  {formStatus && (
-                    <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs text-center animate-fade-in">
+                  {formStatus ? (
+                    <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 text-xs text-center">
                       {formStatus}
                     </div>
+                  ) : (
+                    <p className="text-xs text-[var(--muted)] text-center leading-normal">
+                      This opens your email app with the message ready to send to me.
+                    </p>
                   )}
-
-                  <p className="text-[11px] text-[var(--muted)] text-center leading-normal">
-                    This launches your default email client with your message pre-formatted. You can also copy my email directly above.
-                  </p>
                 </form>
               </div>
             </div>
@@ -1118,10 +1104,10 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer className="py-10 border-t border-[var(--line)]/40 text-center text-xs text-[var(--muted)]">
+      <footer className="py-12 border-t border-[var(--line)]/50 text-center text-xs text-[var(--muted)]">
         <div className="max-w-7xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            © {new Date().getFullYear()} Olona Metia Williams · Kraaifontein, Cape Town, South Africa
+            © 2026 Olona Williams · Kraaifontein, Cape Town · Built with HTML, CSS and JavaScript
           </div>
           <div className="flex items-center gap-4">
             <a href="https://github.com/Olona-04" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--ink)]">
@@ -1130,20 +1116,20 @@ export default function App() {
             <a href="https://www.linkedin.com/in/olona-williams-5797653b1/" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--ink)]">
               LinkedIn
             </a>
-            <button onClick={() => setShowVercelModal(true)} className="hover:text-[var(--accent)]">
-              Vercel Ready ✓
+            <button onClick={() => setShowVercelModal(true)} className="hover:text-[var(--accent)] cursor-pointer">
+              Vercel Deployment
             </button>
           </div>
         </div>
       </footer>
 
-      {/* CERTIFICATE MODAL */}
+      {/* CERTIFICATE DETAIL MODAL */}
       {selectedCert && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl max-w-md w-full p-6 relative shadow-2xl animate-in fade-in duration-200">
             <button
               onClick={() => setSelectedCert(null)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)]"
+              className="absolute top-4 right-4 p-2 rounded-full bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -1152,9 +1138,9 @@ export default function App() {
               <img
                 src={selectedCert.image}
                 alt={selectedCert.title}
-                className="w-48 h-48 rounded-full object-cover bg-white border-4 border-[var(--accent)] shadow-xl mb-4"
+                className="w-48 h-48 rounded-full object-cover bg-white border-4 border-[var(--accent)] shadow-xl mb-4 p-1"
               />
-              <h3 className="text-xl font-bold text-[var(--ink)] mb-1">
+              <h3 className="text-2xl font-bold text-[var(--ink)] mb-1">
                 {selectedCert.title}
               </h3>
               <div className="text-sm font-semibold text-[var(--accent)] mb-1">
@@ -1169,13 +1155,13 @@ export default function App() {
                   href={selectedCert.verifyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-[var(--accent)] text-[var(--on-accent)] hover:opacity-95 text-center flex items-center justify-center gap-1.5"
+                  className="flex-1 py-3 rounded-xl text-xs font-semibold bg-[var(--accent)] text-[var(--on-accent)] hover:opacity-95 text-center flex items-center justify-center gap-1.5"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" /> Verify on Coursera
+                  <ExternalLink className="w-3.5 h-3.5" /> View Badge on Coursera
                 </a>
                 <button
                   onClick={() => setSelectedCert(null)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-semibold border border-[var(--line)] bg-[var(--surface2)] text-[var(--ink)]"
+                  className="px-5 py-3 rounded-xl text-xs font-semibold border border-[var(--line)] bg-[var(--surface2)] text-[var(--ink)] cursor-pointer"
                 >
                   Close
                 </button>
@@ -1185,40 +1171,258 @@ export default function App() {
         </div>
       )}
 
-      {/* CV MODAL */}
+      {/* COMPREHENSIVE INTERACTIVE CV PREVIEW MODAL */}
       {showCvModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6">
-          <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl max-w-4xl w-full h-[85vh] flex flex-col relative shadow-2xl overflow-hidden">
-            <div className="p-4 sm:p-5 border-b border-[var(--line)] flex items-center justify-between bg-[var(--surface2)]">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-[var(--accent)]" />
-                <h3 className="font-bold text-sm sm:text-base text-[var(--ink)]">
-                  Olona Metia Williams – Curriculum Vitae
-                </h3>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-5">
+          <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl max-w-5xl w-full h-[92vh] flex flex-col relative shadow-2xl overflow-hidden">
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-[var(--line)] flex flex-wrap items-center justify-between gap-3 bg-[var(--surface2)]">
+              <div className="flex items-center gap-2.5">
+                <FileText className="w-5 h-5 text-[var(--accent)] shrink-0" />
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-[var(--ink)] leading-tight">
+                    Olona Metia Williams – CV &amp; Credentials
+                  </h3>
+                  <div className="text-xs text-[var(--muted)]">
+                    Page {cvCurrentPage} of {CV_PAGES.length}: {CV_PAGES[cvCurrentPage - 1].title}
+                  </div>
+                </div>
               </div>
+
+              {/* Action Buttons */}
               <div className="flex items-center gap-2">
+                {/* View Mode Toggle */}
+                <div className="inline-flex rounded-xl bg-[var(--surface)] p-1 border border-[var(--line)]">
+                  <button
+                    onClick={() => setCvViewMode('document')}
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                      cvViewMode === 'document' ? 'bg-[var(--accent)] text-[var(--on-accent)]' : 'text-[var(--muted)]'
+                    }`}
+                  >
+                    Document Pages
+                  </button>
+                  <button
+                    onClick={() => setCvViewMode('text')}
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                      cvViewMode === 'text' ? 'bg-[var(--accent)] text-[var(--on-accent)]' : 'text-[var(--muted)]'
+                    }`}
+                  >
+                    Resume Text
+                  </button>
+                </div>
+
                 <a
                   href="/OLONA_WILLIAMS_CV.pdf"
-                  download="Olona_Williams_CV.pdf"
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--accent)] text-[var(--on-accent)] flex items-center gap-1.5"
+                  download="OLONA_WILLIAMS_CV.pdf"
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[var(--accent)] text-[var(--on-accent)] flex items-center gap-1.5 shadow-sm hover:brightness-105"
                 >
                   <Download className="w-3.5 h-3.5" /> Download PDF
                 </a>
+
+                <a
+                  href="/OLONA_WILLIAMS_CV.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden sm:inline-flex px-3 py-1.5 rounded-xl text-xs font-semibold border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] items-center gap-1.5"
+                  title="Open raw PDF in new browser tab"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Open Tab
+                </a>
+
                 <button
                   onClick={() => setShowCvModal(false)}
-                  className="p-1.5 rounded-lg bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--ink)]"
+                  className="p-1.5 rounded-xl bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--ink)] border border-[var(--line)] cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 bg-[var(--bg)] p-1 overflow-hidden">
-              <iframe
-                src="/OLONA_WILLIAMS_CV.pdf"
-                className="w-full h-full border-0 rounded-b-2xl"
-                title="Olona Williams CV"
-              />
+            {/* Page Navigation Tabs */}
+            {cvViewMode === 'document' && (
+              <div className="px-4 py-2 border-b border-[var(--line)] bg-[var(--surface)] flex items-center justify-between gap-2 overflow-x-auto">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  {CV_PAGES.map((p) => (
+                    <button
+                      key={p.page}
+                      onClick={() => setCvCurrentPage(p.page)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                        cvCurrentPage === p.page
+                          ? 'bg-[var(--accent)] text-[var(--on-accent)] font-semibold shadow-sm'
+                          : 'bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)]'
+                      }`}
+                    >
+                      Page {p.page}: {p.title}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Zoom Controls */}
+                <div className="hidden sm:flex items-center gap-1 text-xs text-[var(--muted)]">
+                  <button
+                    onClick={() => setCvZoom((z) => Math.max(70, z - 15))}
+                    className="p-1 rounded-lg hover:bg-[var(--surface2)] text-[var(--ink)]"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="w-4 h-4" />
+                  </button>
+                  <span className="w-12 text-center">{cvZoom}%</span>
+                  <button
+                    onClick={() => setCvZoom((z) => Math.min(160, z + 15))}
+                    className="p-1 rounded-lg hover:bg-[var(--surface2)] text-[var(--ink)]"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setCvZoom(100)}
+                    className="p-1 rounded-lg hover:bg-[var(--surface2)] text-[var(--ink)]"
+                    title="Reset Zoom"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Viewer Content */}
+            <div className="flex-1 bg-[var(--bg)]/90 p-4 overflow-y-auto flex items-start justify-center relative">
+              {cvViewMode === 'document' ? (
+                <div className="flex flex-col items-center justify-center max-w-full">
+                  {/* High-res rendered document page */}
+                  <div
+                    style={{ width: `${cvZoom}%`, maxWidth: '850px' }}
+                    className="transition-all duration-200 shadow-2xl rounded-2xl overflow-hidden border border-[var(--line)] bg-white"
+                  >
+                    <img
+                      src={CV_PAGES[cvCurrentPage - 1].image}
+                      alt={`CV Page ${cvCurrentPage} - ${CV_PAGES[cvCurrentPage - 1].title}`}
+                      className="w-full h-auto block select-none"
+                    />
+                  </div>
+
+                  {/* Previous / Next buttons */}
+                  <div className="flex items-center justify-center gap-4 mt-6 mb-4">
+                    <button
+                      disabled={cvCurrentPage <= 1}
+                      onClick={() => setCvCurrentPage((p) => Math.max(1, p - 1))}
+                      className="px-4 py-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] text-xs font-semibold disabled:opacity-40 flex items-center gap-1 cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Previous Page
+                    </button>
+                    <span className="text-xs text-[var(--muted)] font-medium">
+                      Page {cvCurrentPage} of {CV_PAGES.length}
+                    </span>
+                    <button
+                      disabled={cvCurrentPage >= CV_PAGES.length}
+                      onClick={() => setCvCurrentPage((p) => Math.min(CV_PAGES.length, p + 1))}
+                      className="px-4 py-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] text-xs font-semibold disabled:opacity-40 flex items-center gap-1 cursor-pointer"
+                    >
+                      Next Page <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Text & Structured View of Resume */
+                <div className="max-w-3xl w-full bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-6 sm:p-10 shadow-lg text-[var(--ink)] space-y-8">
+                  <div className="border-b border-[var(--line)] pb-6">
+                    <h2 className="text-3xl font-bold tracking-tight mb-1 text-[var(--ink)]">
+                      OLONA METIA WILLIAMS
+                    </h2>
+                    <p className="text-sm text-[var(--accent)] font-semibold mb-3">
+                      Application Developer · IT Final-Year Student (CPUT) · Aspiring Software Engineer
+                    </p>
+                    <div className="flex flex-wrap gap-y-1 gap-x-4 text-xs text-[var(--muted)]">
+                      <span>📞 062 770 0449 / 083 418 8608</span>
+                      <span>✉ 221630635@mycput.ac.za / olonawilliams04@gmail.com</span>
+                      <span>📍 Kraaifontein, Cape Town, 7570</span>
+                    </div>
+                  </div>
+
+                  {/* Career Objective */}
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--accent)] mb-2">
+                      Career Objective
+                    </h4>
+                    <p className="text-sm text-[var(--muted)] leading-relaxed">
+                      Final-year Information Technology (Application Development) student at Cape Peninsula University of Technology (CPUT) with a strong interest in software and web development. Passionate about building practical digital solutions and improving user experiences through technology. Seeking an internship or junior developer opportunity to apply programming, database, and UI/UX skills while gaining industry experience.
+                    </p>
+                  </div>
+
+                  {/* Education */}
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--accent)] mb-3">
+                      Education
+                    </h4>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <div className="font-bold text-[var(--ink)]">Cape Peninsula University of Technology (CPUT)</div>
+                        <div className="text-[var(--accent)] font-medium text-xs">National Diploma in Information Technology – Application Development</div>
+                        <div className="text-xs text-[var(--muted)]">Currently Enrolled (Final Year)</div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-[var(--ink)]">Cape Peninsula University of Technology (CPUT)</div>
+                        <div className="text-[var(--accent)] font-medium text-xs">Higher Certificate in Information &amp; Communication Technology</div>
+                        <div className="text-xs text-[var(--muted)]">Completed: 2024</div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-[var(--ink)]">Bernadino Heights High School</div>
+                        <div className="text-[var(--accent)] font-medium text-xs">Matric (Grade 12)</div>
+                        <div className="text-xs text-[var(--muted)]">Completed: 2020</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Project Experience */}
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--accent)] mb-3">
+                      Project Experience
+                    </h4>
+                    <div className="space-y-4 text-sm">
+                      <div>
+                        <div className="font-bold text-[var(--ink)]">Thrifting E-Commerce Website (Group Project) — 2025</div>
+                        <div className="text-xs text-[var(--accent)] font-medium mb-1">Technologies: HTML, CSS, Java, PHP, MySQL</div>
+                        <ul className="list-disc list-inside text-xs text-[var(--muted)] space-y-1">
+                          <li>Developed a thrift clothing website with responsive user interfaces.</li>
+                          <li>Implemented PHP backend functionality and database connectivity.</li>
+                          <li>Enabled dynamic product display and structured data storage.</li>
+                          <li>Collaborated in a team using structured development practices.</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <div className="font-bold text-[var(--ink)]">NSFAS Mobile App Redesign Prototype — 2025</div>
+                        <div className="text-xs text-[var(--accent)] font-medium mb-1">Tools: Figma, UI/UX Design</div>
+                        <ul className="list-disc list-inside text-xs text-[var(--muted)] space-y-1">
+                          <li>Designed an interactive NSFAS mobile app prototype to improve student funding access.</li>
+                          <li>Created core app flows including login, applications, document uploads, and dashboard tracking.</li>
+                          <li>Applied user-centered design principles to enhance usability and navigation.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* References */}
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--accent)] mb-3">
+                      References
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                      <div className="p-3 rounded-xl bg-[var(--surface2)] border border-[var(--line)]">
+                        <div className="font-bold text-[var(--ink)]">Mr Sabelo Nobula</div>
+                        <div className="text-[var(--muted)]">Western Cape Government (Department of the Premier)</div>
+                        <div className="text-[var(--accent)]">Sabelo.Nobula@westerncape.gov.za</div>
+                        <div className="text-[var(--muted)]">021 467 9246 / 072 865 4848</div>
+                      </div>
+                      <div className="p-3 rounded-xl bg-[var(--surface2)] border border-[var(--line)]">
+                        <div className="font-bold text-[var(--ink)]">Sesethu Mbodlana</div>
+                        <div className="text-[var(--muted)]">SAB Brewery Newlands</div>
+                        <div className="text-[var(--accent)]">sesethumbodlana431@gmail.com</div>
+                        <div className="text-[var(--muted)]">062 342 9048</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1230,7 +1434,7 @@ export default function App() {
           <div className="bg-[var(--surface)] border border-[var(--line)] rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowVercelModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)]"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[var(--surface2)] text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -1241,44 +1445,36 @@ export default function App() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-[var(--ink)]">Ready for Vercel Deployment</h3>
-                <p className="text-xs text-[var(--muted)]">Zero configuration needed • Instant production build</p>
+                <p className="text-xs text-[var(--muted)]">Zero configuration needed • Peer-deps conflict resolved</p>
               </div>
             </div>
 
             <div className="space-y-4 text-sm text-[var(--muted)] mb-6">
               <div className="p-4 rounded-xl bg-[var(--surface2)] border border-[var(--line)]">
                 <div className="font-semibold text-[var(--ink)] mb-1 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Pre-configured vercel.json
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Pre-configured vercel.json &amp; .npmrc
                 </div>
                 <p className="text-xs">
-                  A root <code>vercel.json</code> file has been generated with SPA rewrites so clean URLs and page reloads work smoothly.
+                  Your <code>vercel.json</code> and <code>.npmrc</code> are configured with <code>legacy-peer-deps=true</code> to avoid any npm peer conflict during deployment.
                 </p>
               </div>
 
               <div className="space-y-3">
-                <div className="font-semibold text-[var(--ink)] text-sm">Deployment Method 1: GitHub &amp; Vercel Dashboard (Recommended)</div>
-                <ol className="list-decimal list-inside space-y-1.5 text-xs text-[var(--muted)]">
-                  <li>Push your codebase to a repository on GitHub (e.g. <code>github.com/Olona-04/portfolio</code>).</li>
-                  <li>Log into <a href="https://vercel.com" target="_blank" rel="noreferrer" className="text-[var(--accent)] underline">vercel.com</a> and click <strong>Add New &gt; Project</strong>.</li>
-                  <li>Import your GitHub repository. Vercel automatically detects <strong>Vite</strong>.</li>
-                  <li>Click <strong>Deploy</strong>. Your site will be live on a custom <code>.vercel.app</code> domain in under 30 seconds!</li>
-                </ol>
-              </div>
-
-              <div className="space-y-2">
-                <div className="font-semibold text-[var(--ink)] text-sm">Deployment Method 2: Vercel CLI</div>
-                <div className="bg-[var(--bg)] p-3 rounded-xl border border-[var(--line)] font-mono text-xs text-[var(--accent)]">
-                  npx vercel
+                <div className="font-semibold text-[var(--ink)] text-sm">Deployment Method: Push to GitHub</div>
+                <div className="bg-[var(--bg)] p-3 rounded-xl border border-[var(--line)] font-mono text-xs text-[var(--accent)] space-y-1">
+                  <div>git add package.json vercel.json .npmrc src/ public/</div>
+                  <div>git commit -m "Update portfolio look and feel, fix CV preview"</div>
+                  <div>git push origin main</div>
                 </div>
-                <p className="text-xs">Follow the interactive prompts to deploy directly from terminal.</p>
+                <p className="text-xs">Vercel will detect the push and automatically deploy your live portfolio!</p>
               </div>
             </div>
 
             <button
               onClick={() => setShowVercelModal(false)}
-              className="w-full py-3 rounded-xl font-semibold text-sm bg-[var(--surface2)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--accent)]"
+              className="w-full py-3 rounded-xl font-semibold text-sm bg-[var(--surface2)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--accent)] cursor-pointer"
             >
-              Got it, close guide
+              Close guide
             </button>
           </div>
         </div>
